@@ -1,5 +1,5 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BIN_DIR=$SCRIPT_DIR/bin
-mkdir -p $BIN_DIR
-gcc dict.c -o $BIN_DIR/dict && $BIN_DIR/dict
+echo $BIN_DIR
+rm -R $BIN_DIR
