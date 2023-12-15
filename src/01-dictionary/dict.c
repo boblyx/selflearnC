@@ -1,36 +1,95 @@
 /**
- * Creating a Dictionary with specified types in C
- * by Bob Lee YX
+ * dict.c
+ * Creating a string dictionary in C.
+ * - Hash function hashes an input string into a unsigned long
+ * - Use another fuction `getBuckets` that:
+ *      - Determine the n-th factor of 2^16 the hash belongs to.
+ *      - Determine the p-th index on the n-th factor it belongs to.
+ * - Using above information place the user supplied value into 
+ *   the n-th bucket at the p-th index.
+ * - Do the same thing to retrieve the value.
+ * - TODO: Handle collisions.
  */
+
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
-/* Represents a Key value pair*/
-typedef struct Item{ 
-  size_t size;
-  void* key;
-  char* key_type;
-  void* value;
-  char* value_type;
-} Item;
+/**
+ * Custom made hash function.
+ * Probably performs badly but who cares.
+ */
+unsigned long hash(char* str){
+    int c = 0;
+    unsigned long hash = 13;
 
-/* Check if a given key matches and returns the value */
-void* getValue(Item* item, char* key){
-  printf("%s\n", (char*)item->key);
-  printf("%s\n", key);
-  printf("%s\n", key == (char*)item->key ? "true" : "false");
-  return item->value;
+    while( c = *str++){
+        hash = ((hash * 41) + hash)/37 + c;
+    }
+    return hash;
+}
+
+/**
+ * Gets the super bucket as explained above.
+ */
+int* getSuperBuckets(unsigned long num){
+    int count = 0;
+    while( num > 65536){
+        num = num/65536;
+        ++count;
+    }
+    static int out[2];
+    out[0] = count;
+    out[1] = (int)num;
+    return out;
+}
+
+/**
+ * SuperBucket definition.
+ * As a hard limit, only 2^16 values allowed per bucket.
+ * TODO: Each value in values is to contain a list
+ * which will store collisions.
+ */
+typedef struct SuperBucket{
+    char* values[65536]; // List of items.
+    char* collisions[];
+} SuperBucket;
+
+/**
+ * Dict definition.
+ * Stores multiple buckets.
+ * Based on tests, there will only be 4 buckets max.
+ */
+typedef struct Dict{
+    SuperBucket buckets[4];
+} Dict;
+
+void dictAdd(Dict* d, char* key, char* value){
+    unsigned long h = hash(key);
+    int* bdata = getSuperBuckets(h);
+    int bnum = bdata[0];
+    int bid = bdata[1];
+    //char* testo[2] = {"derp", "dreep"};
+    //d->buckets[bnum].collisions[bid] = *testo;
+    d->buckets[bnum].values[bid] = malloc(sizeof(char*));
+    d->buckets[bnum].values[bid] = value;
+}
+
+char* dictFind(Dict d, char* key){
+    unsigned long h = hash(key);
+    int* bdata = getSuperBuckets(h);
+    int bnum = bdata[0];
+    int bid = bdata[1];
+    char* out = d.buckets[bnum].values[bid];
+    return out;
 }
 
 int main(void){
-  Item* thing;
-  size_t base_size = sizeof(Item) + sizeof(char*) * 2 + sizeof(char*) * 2; 
-  thing = malloc(base_size);
-  char* test_key = "key1";
-  char* test_value = "value1";
-  thing->key = test_key;
-  thing->value =  test_value;
-  getValue(thing, "key1");
-  //Let's say we want to add a key 
-  return 0;
+    Dict testi;
+    dictAdd(&testi, "derp", "dorp");
+    dictAdd(&testi, "darp", "durp");
+    char* result = dictFind(testi, "derp");
+    char* result2 = dictFind(testi, "darp");
+    printf("%s\n", result);
+    printf("%s\n", result2);
 }
