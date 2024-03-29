@@ -84,6 +84,7 @@ void dUnit(Unit* u){
     // Free the soldiers first
     //free(u->name);
     free(u->soldiers);
+    free(u);
     //free(u);
 }
 
@@ -133,7 +134,5 @@ int main(void){
     addSoldiers(fellowship, new_soldiers, sizeof(new_soldiers)/sizeof(Soldier));
     rU(fellowship);
     dUnit(fellowship);
-    //rU(fellowship);
-    free(fellowship);
     return 0;
 }
