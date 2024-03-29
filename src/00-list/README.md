@@ -28,3 +28,6 @@ sizeof(*array)/sizeof(*array_type)
 ## Conclusions
 - C is actually very fun to code in.
 - Makes me appreciate low level stuff that is going on in higher level languages that likely has done most of the heavy lifting behind the scenes in C.
+
+## Notes
+- 29/3/2024: By the gods, there are so many memory leaks in this exercise. To redo!

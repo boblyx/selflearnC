@@ -18,6 +18,8 @@ List* newList(void){
   return list;
 }
 
+//void dList(List* list){}
+
 List* add(List* list, char* item){
   printf("Start add\n");
   List* w = newList(); /* malloc(sizeof(list) + sizeof(List) + sizeof(char*) + sizeof(int)); */
@@ -53,6 +55,7 @@ int main(void){
   for(int i = 0; i < thing->num; ++i){
     printf("\t-%s\n", thing->items[i]);
   }
+  dList(thing);
   free(thing);
   free(test);
   return 0;

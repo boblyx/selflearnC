@@ -38,7 +38,7 @@ typedef struct{
 Unit* newUnit(char* name, Soldier soldiers[], size_t strength){
     Unit* u = malloc(sizeof(Unit));
     if(strength == 0){ u->soldiers = NULL;};
-    u->soldiers = calloc(strength, sizeof(Soldier));
+    //u->soldiers = calloc(strength, sizeof(Soldier)); << Malloc not needed!
     u->name = name;
     u->count = strength;
     u->soldiers = soldiers;
@@ -49,8 +49,8 @@ void addSoldiers(Unit* u, Soldier soldiers[], size_t strength){
     if(strength == 0){return;};
     size_t p_count = u->count;
     size_t new_count = strength + p_count;
-    char message[50];
-    Soldier* prev;
+    char message[50] = "";
+    Soldier* prev = calloc( p_count , sizeof(Soldier));
     memcpy(prev, u->soldiers, sizeof(Soldier) * p_count);
     //u->soldiers = realloc(u->soldiers, new_count * sizeof(Soldier)); /// << DOESN'T WORK...
     //u->soldiers = malloc( new_count * sizeof(Soldier));
@@ -64,6 +64,7 @@ void addSoldiers(Unit* u, Soldier soldiers[], size_t strength){
         strcat(message, ", ");
     }
     u->count = new_count;
+    free(prev);
     printf("%sjoined the %s!\n", message, u->name);
 }
 
@@ -77,6 +78,13 @@ void rU(Unit* unit){
         printf("\t - %s\n" , unit->soldiers[i].name);
     }
     return;
+}
+
+void dUnit(Unit* u){
+    // Free the soldiers first
+    //free(u->name);
+    free(u->soldiers);
+    //free(u);
 }
 
 /* END UNIT CLASS */
@@ -112,7 +120,7 @@ int main(void){
     rS(soldiers);
     printf("%d\n", strength);
 
-    Soldier nobodies[0]; // How to handle empty arrays?
+    //Soldier nobodies[0]; // How to handle empty arrays?
 
     Unit* fellowship = newUnit("Fellowship of the Ring", soldiers, strength);
     rU(fellowship);
@@ -124,4 +132,8 @@ int main(void){
     
     addSoldiers(fellowship, new_soldiers, sizeof(new_soldiers)/sizeof(Soldier));
     rU(fellowship);
+    dUnit(fellowship);
+    //rU(fellowship);
+    free(fellowship);
+    return 0;
 }

@@ -2,4 +2,4 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BIN_DIR=$SCRIPT_DIR/bin
 mkdir -p $BIN_DIR
-gcc list.c -o $BIN_DIR/list && $BIN_DIR/list
+gcc -g list.c -o $BIN_DIR/list && $BIN_DIR/list && valgrind $BIN_DIR/list
