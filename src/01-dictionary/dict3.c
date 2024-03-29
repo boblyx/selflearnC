@@ -44,6 +44,11 @@ int* getBuckets(unsigned long num){
     return out;
 }
 
+typedef struct {
+    const char* key;
+    char* value;
+} DictValue;
+
 /**
  * Bucket definition.
  * As a hard limit, only 2^16 values allowed per bucket.
@@ -51,45 +56,65 @@ int* getBuckets(unsigned long num){
  * which will store collisions.
  */
 typedef struct Bucket{
-    char* values[65536]; // List of items.
-    char* collisions[];
+    DictValue* values; // List of items.
+    size_t count;
 } Bucket;
 
 /**
  * Dict definition.
  * Stores multiple buckets.
- * Based on tests, there will only be 4 buckets max.
  */
 typedef struct Dict{
-    Bucket buckets[4];
+    Bucket* buckets;
+    size_t count;
+    size_t cap;
 } Dict;
+
+Dict* cDict(void){
+    Dict* dict = malloc(sizeof(Dict));
+    dict->count = 0;
+    dict->cap = 1000;
+    dict->buckets = calloc(dict->cap, sizeof(Bucket));
+    if(dict->buckets == NULL){
+        free(dict);
+        return NULL;
+    }
+    return dict;
+}
+
+DictValue* nDictValue(char* key, char* value){
+    DictValue* dv = malloc(sizeof(DictValue));
+    dv->key = key;
+    dv->value = value;
+    return dv;
+}
 
 void dictAdd(Dict* d, char* key, char* value){
     unsigned long h = hash(key);
     int* bdata = getBuckets(h);
     int bnum = bdata[0];
     int bid = bdata[1];
-    //char* testo[2] = {"derp", "dreep"};
-    //d->buckets[bnum].collisions[bid] = *testo;
-    d->buckets[bnum].values[bid] = malloc(sizeof(char*));
-    d->buckets[bnum].values[bid] = value;
+    printf("%d\n", bid);
+    d->buckets[bnum].values = calloc(65535, sizeof(DictValue*));
+    d->buckets[bnum].values[bid].value = "test";
 }
 
-char* dictFind(Dict d, char* key){
+char* dictFind(Dict* d, char* key){
     unsigned long h = hash(key);
     int* bdata = getBuckets(h);
     int bnum = bdata[0];
     int bid = bdata[1];
-    char* out = d.buckets[bnum].values[bid];
+    printf("%d\n", bid);
+    char* out = d->buckets[bnum].values[bid].value;
     return out;
 }
 
 int main(void){
-    Dict testi;
-    dictAdd(&testi, "derp", "dorp");
-    dictAdd(&testi, "darp", "durp");
+    Dict* testi = cDict();
+    dictAdd(testi, "derp", "dorp");
+    dictAdd(testi, "darp", "durp");
     char* result = dictFind(testi, "derp");
-    char* result2 = dictFind(testi, "darp");
+    //char* result2 = dictFind(testi, "darp");
     printf("%s\n", result);
-    printf("%s\n", result2);
+    //printf("%s\n", result2);
 }

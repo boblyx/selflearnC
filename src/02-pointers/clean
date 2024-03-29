@@ -1,6 +1,5 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BIN_DIR=$SCRIPT_DIR/bin
-PROJ=dict3
-mkdir -p $BIN_DIR
-gcc $PROJ.c -o $BIN_DIR/$PROJ && $BIN_DIR/$PROJ
+echo $BIN_DIR
+rm -R $BIN_DIR
