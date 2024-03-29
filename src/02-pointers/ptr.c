@@ -45,13 +45,14 @@ Unit* newUnit(char* name, Soldier soldiers[], size_t strength){
     return u;
 }
 
-void addSoldiers(Unit* u, Soldier soldiers[], size_t strength){
+void addSoldiers(Unit* u, Soldier* soldiers, size_t strength){
     if(strength == 0){return;};
     size_t p_count = u->count;
     size_t new_count = strength + p_count;
     char message[50] = "";
     Soldier* prev = calloc( p_count , sizeof(Soldier));
     memcpy(prev, u->soldiers, sizeof(Soldier) * p_count);
+    //Soldier* other = realloc(&(u->soldiers), new_count * sizeof(Soldier));
     //u->soldiers = realloc(u->soldiers, new_count * sizeof(Soldier)); /// << DOESN'T WORK...
     //u->soldiers = malloc( new_count * sizeof(Soldier));
     u->soldiers = calloc( new_count, sizeof(Soldier));
