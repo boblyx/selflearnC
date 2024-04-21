@@ -1,6 +1,7 @@
 /**
  * ptr.c
  * Various pointer exercises
+ * 2024/04/21 - Fixed!
  */
 
 #include<stdio.h>
@@ -22,25 +23,27 @@ Soldier newSoldier(char* name, int height){
     return s;
 }
 
-void expandParty(Soldier* soldiers, int current, int new){
+Soldier* expandParty(Soldier* soldiers, int current, int new){
     int total = current + new;
     printf("total members: %d\n", total);
     Soldier* soldier2 = realloc(soldiers, (total + 1) * sizeof(Soldier));
-    soldiers = soldier2;
+    return soldier2;
 }
 
-void joinParty(Soldier* soldiers, int cap, Soldier fng){
-    expandParty(soldiers, cap, 1);
+Soldier* joinParty(Soldier* soldiers, int cap, Soldier fng){
+    Soldier* new_soldiers = expandParty(soldiers, cap, 1);
     printf("index: %d\n", cap);
-    soldiers[cap] = fng;
+    new_soldiers[cap] = fng;
+    return new_soldiers;
 }
 
 int main(void){
     Soldier* soldiers = malloc(sizeof(Soldier));
     Soldier Boromir = newSoldier("Boromir", 193);
     Soldier Aragorn = newSoldier("Aragorn", 198);
-    joinParty(soldiers, 0, Boromir);
-    joinParty(soldiers, 1, Aragorn);
-    printf("%s\n", soldiers[0]); // << Broken...
+    soldiers = joinParty(soldiers, 0, Boromir);
+    soldiers = joinParty(soldiers, 1, Aragorn);
+    printf("%s\n", soldiers[0]);
+    free(soldiers);
     return 0;
 }
