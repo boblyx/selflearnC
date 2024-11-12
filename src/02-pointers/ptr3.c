@@ -13,6 +13,7 @@ int main(void) {
     numptr = malloc(sizeof(int)*5);
     numptr[4] = 4;
     int* otherptr = realloc(numptr, sizeof(int)*6);
-    printf("Done. %d\n", otherptr[4]);
+    numptr[5] = 5;
+    printf("Done. %d\n", otherptr[5]);
     free(otherptr); // Only need to free the realloc pointer. No need to free numptr.
 }
